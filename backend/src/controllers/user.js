@@ -4,10 +4,14 @@ class UserController {
     static index () {}
     static show () {}
     static store (req, res, next) {
-        User.query().insert(req.body)
+
+        const { email } = req.body
+
+        User.query().insert({ email })
             .returning('*')
             .then(users => res.status(201).send(users))
             .catch(next)
+            
     }
 }
 

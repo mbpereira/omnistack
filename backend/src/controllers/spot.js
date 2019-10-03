@@ -76,7 +76,9 @@ class SpotController {
     }
     static show (req, res, next) {
 
-        Spot.query().findById(req.params.id)
+        const { id } = req.params
+
+        Spot.query().findById(id)
             .eager('[user, techs]')
             .then(addLink)
             .then(spot => res.status(200).send(spot))
@@ -85,25 +87,25 @@ class SpotController {
     }
     static async store (req, res, next) {
 
+
         if(!req.files || !req.files.thumbnail)
             return res.status(400).send(errors.BadRequest("Voce precisa enviar uma imagem"))
 
-        console.log(req.body.techs)
-
-        req.body.techs = (req.body.techs) 
+        // recuperar os ids relacionados
+        const techs = (req.body.techs) 
             ? req.body.techs.split(',').map(tech => ({ id: tech}))
             : []
-
         
+        const { user_id, company, price } = req.body
 
         try {
 
             const savedImage = await saveImages(req.files.thumbnail)
 
-            req.body.thumbnail = (savedImage && Array.isArray(savedImage)) ? savedImage[0] : savedImage || ''
+            const thumbnail = (savedImage && Array.isArray(savedImage)) ? savedImage[0] : savedImage || ''
 
             const savedSpot = await Spot.query()
-                .insertGraph(req.body, { relate: true })
+                .insertGraph({ user_id, company, price, thumbnail, techs }, { relate: true })
                 .returning('*')
                 .eager('techs')
 
