@@ -2,14 +2,24 @@ const { User } = require('../models')
 
 class Session {
 
-    static login (req, res, next) {
+    static async store (req, res, next) {
         
         const { email } = req.body
 
-        User.query().where('email', email)
-            .first()
-            .then(user => res.status(200).send(user))
-            .catch(next)
+        try {
+
+            let user = await User.query().where('email', email).first()
+
+            if(!!user)
+                return res.status(200).send(user)
+
+            user = await User.query().insert({ email }).returning('*')
+
+            res.status(201).send(user)
+
+        } catch (e) {
+            next(e)
+        }
             
     }
 

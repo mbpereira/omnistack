@@ -4,13 +4,13 @@ const { multiparty } = require('../middlewares')
 
 const router = express.Router()
 
-router.post('/login', Session.login)
+router.post('/sessions', Session.store)
 
 router.get('/techs', Tech.index)
 router.get('/techs/:id', Tech.show)
 router.post('/techs', Tech.store)
 
-router.post('/users', User.store)
+// router.post('/users', User.store)
 
 router.get('/spots', Spot.index)
 router.get('/spots/:id', Spot.show)

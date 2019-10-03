@@ -5,7 +5,15 @@ const app = express()
 const { getHttpError } = require('./errors')
 
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "*");
+    next();
+});
+
 app.use('/files', express.static(path.resolve('static', 'images')))
+
+
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
