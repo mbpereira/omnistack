@@ -1,11 +1,12 @@
 const express = require('express')
-const { Booking, Tech, User, Spot, Session } = require('../controllers')
+const { Booking, Tech, Dashboard, Spot, Session } = require('../controllers')
 const { multiparty } = require('../middlewares')
 
 const router = express.Router()
 
 router.post('/sessions', Session.store)
 
+router.get('/dashboard', Dashboard.index)
 router.get('/techs', Tech.index)
 router.get('/techs/:id', Tech.show)
 router.post('/techs', Tech.store)

@@ -3,5 +3,6 @@ module.exports = {
     Tech: require('./tech'),
     User: require('./user'),
     Spot: require('./spot'),
-    Session: require('./session')
+    Session: require('./session'),
+    Dashboard: require('./dashboard')
 }

@@ -20,9 +20,9 @@ class TechController {
     }
     static store (req, res, next) {
 
-        const { name } = req.body
+        const data = Array.isArray(req.body) ? req.body : { name: req.body.name }
 
-        Tech.query().insert({ name })
+        Tech.query().insert(data)
             .returning('*')
             .then(createdTechs => res.status(201).send(createdTechs))
             .catch(next)

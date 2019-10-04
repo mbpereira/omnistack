@@ -5,168 +5,158 @@ import './styles.css'
 
 const user_id = localStorage.getItem('session')
 
-function SelectTechs (props) {
-    return (
-        <select className="flex-fill" onChange={props.onChange}>
-            {props.techs.map(tech => (
-                <option key={tech.id} value={tech.id}>{tech.name}</option>
-            ))}
-        </select>
-    )
+function SelectTechs(props) {
+  return (
+    <select className="flex-fill" onChange={props.onChange}>
+      {props.techs.map(tech => (
+        <option key={tech.id} value={tech.id}>{tech.name}</option>
+      ))}
+    </select>
+  )
 }
 function CreateTechs(props) {
-    return (
-        <input
-            id="techs"
-            name="techs"
-            placeholder="Separadas por virgula"
-            className="flex-fill"
-            value={props.techs}
-            onChange={props.onChange}
-        />
-    )
+  return (
+    <input
+      id="techs"
+      name="techs"
+      placeholder="Separadas por virgula"
+      className="flex-fill"
+      value={props.techs}
+      onChange={props.onChange}
+    />
+  )
 }
 export default function New({ history }) {
 
-    const [ techs, setTechs ] = useState([])
-    const [ thumbnail, setThumbail ] = useState(null)
-    const [ company, setCompany ] = useState('')
-    const [ price, setPrice ] = useState('')
+  const [techs, setTechs] = useState([])
+  const [thumbnail, setThumbail] = useState(null)
+  const [company, setCompany] = useState('')
+  const [price, setPrice] = useState('')
 
-    const [ markedToNew, setMarkedToNew ] = useState(true)
+  const [markedToNew, setMarkedToNew] = useState(true)
 
-    const [ createdTechs, setCreatedTechs ] = useState('')
-    const [ selectedTech, setSelectedTech ] = useState('')
-
-
-    const [ spotTechs, setSpotTechs ] = useState([])
+  const [createdTechs, setCreatedTechs] = useState('')
+  const [selectedTech, setSelectedTech] = useState('')
 
 
-    useEffect(() => {
-        loadTechs()
-    }, [])
+  const [spotTechs, setSpotTechs] = useState([])
 
-    const preview = useMemo(() => {
-        return thumbnail ? URL.createObjectURL(thumbnail) : null;
-    }, [thumbnail])
 
-    async function loadTechs () {
+  useEffect(() => {
+    loadTechs()
+  }, [])
 
-        const { data } = await api.get('/techs')
+  const preview = useMemo(() => {
+    return thumbnail ? URL.createObjectURL(thumbnail) : null;
+  }, [thumbnail])
 
-        setTechs(data)
+  async function loadTechs() {
+
+    const { data } = await api.get('/techs')
+
+    setTechs(data)
+
+  }
+  async function handleSubmit(e) {
+
+    e.preventDefault()
+
+    const formData = new FormData(e.target)
+
+    await api.post('/spots', formData, {
+      headers: { user_id }
+    })
+
+    history.push('/dashboard')
+
+  }
+
+  async function handleRelate(e) {
+
+    if (markedToNew) {
+
+      const techsToSave = createdTechs.replace(/\s/g, '').split(',').map(tech => ({ name: tech }))
+
+      console.log(techsToSave)
+      const { data } = await api.post('/techs', techsToSave)
+
+      const selecteds = (Array.isArray(data)) 
+        ? [...data.map(tech => tech.id), ...spotTechs]
+        : [data.id, ...spotTechs]
+
+      console.log(selecteds)
+
+      setSpotTechs(selecteds)
+
+      return loadTechs()
 
     }
-    async function handleSubmit(e) {
 
-        e.preventDefault()
+    setSpotTechs([...spotTechs, Number(selectedTech)])
 
-        const formData = new FormData(e.target)
+    console.log(spotTechs)
+  }
 
-        await api.post('/spots', formData, {
-            headers: { user_id }
-        })
+  return (
+    <form onSubmit={handleSubmit}>
 
-        history.push('/dashboard')
+      <label
+        id="thumbnail"
+        style={{ backgroundImage: `url(${preview})` }}
+        className={thumbnail ? 'has-thumbnail' : ''} >
 
-    }
+        <input
+          type="file"
+          name="thumbnail"
+          onChange={event => setThumbail(event.target.files[0])} />
+        <img src={camera} alt="Select img" />
 
-    async function handleRelate(e) {
-  
-        if(markedToNew) {
+      </label>
 
-            const techsToSave = createdTechs.replace(/\s/g, '').split(',').map(tech => ({ name: tech }))
 
-            const { data } = await api.post('/techs', techsToSave)
+      <label htmlFor="company">EMPRESA *</label>
+      <input
+        id="company"
+        name="company"
+        placeholder="Sua empresa incrível"
+        value={company}
+        onChange={event => setCompany(event.target.value)} />
 
-            const selecteds = (Array.isArray(data)) ? data.map(tech => tech.id).push(...spotTechs) : [data.id, ...spotTechs]
-            
-            setSpotTechs((selecteds))
+      <label htmlFor="techs">TECNOLOGIAS *</label>
+      <div className="inline align-center">
 
-            return loadTechs()
+        <input
+          type="checkbox"
+          id="relate"
+          checked={markedToNew}
+          onChange={e => setMarkedToNew(e.target.checked)} />
+        <label htmlFor="relate">Novo cadastro?</label>
 
+      </div>
+      <div className="inline">
+
+        {
+          !markedToNew
+            ? <SelectTechs techs={techs} onChange={e => setSelectedTech(e.target.value)} />
+            : <CreateTechs techs={createdTechs} onChange={e => setCreatedTechs(e.target.value)} />
         }
+        <button type="button" className="success btn w-auto" onClick={handleRelate}>+ tech</button>
 
-        setSpotTechs([...spotTechs, selectedTech])
+      </div>
+      <ul className="inline">
 
-        console.log(spotTechs)
-    }
+        {techs.filter(tech => spotTechs.indexOf(tech.id) !== -1).map(tech => (<li className="tag" key={tech.id}>{tech.name}</li>))}
 
-    return (
-        <form onSubmit={handleSubmit}>
+      </ul>
+      <label htmlFor="price">VALOR DA DIÁRIA</label>
+      <input
+        id="price"
+        name="price"
+        placeholder="Valor cobrado por dia"
+        value={price}
+        onChange={event => setPrice(event.target.value)} />
+      <button type="submit" className="btn primary">Cadastrar</button>
 
-            <label 
-                id="thumbnail" 
-                style={{ backgroundImage: `url(${preview})`}}
-                className={thumbnail ? 'has-thumbnail' : ''}
-                >
-
-                <input 
-                    type="file" 
-                    name="thumbnail" 
-                    onChange={event => setThumbail(event.target.files[0])}
-                    />
-
-                <img src={camera} alt="Select img" />
-
-            </label>
-
-
-            <label htmlFor="company">EMPRESA *</label>
-
-            <input
-                id="company"
-                name="company"
-                placeholder="Sua empresa incrível"
-                value={company}
-                onChange={event => setCompany(event.target.value)}
-
-            />
-
-            <label htmlFor="techs">TECNOLOGIAS *</label>
-            
-            <div className="inline align-center">
-
-                <input 
-                    type="checkbox"
-                    id="relate"
-                    checked={markedToNew}
-                    onChange={e => setMarkedToNew(e.target.checked)}
-                    />
-                    
-                <label htmlFor="relate">Novo cadastro?</label>
-
-            </div>
-
-            <div className="inline">
-                
-                { !markedToNew 
-                    ? <SelectTechs techs={techs} onChange={e => setSelectedTech(e.target.value)}/> 
-                    : <CreateTechs techs={createdTechs} onChange={e => setCreatedTechs(e.target.value)}/>
-                } 
-
-                <button type="button" className="success btn w-auto" onClick={handleRelate}>+ tech</button>
-
-            </div>
-
-            {/* {techs.map(tech => {
-                if(spotTechs.indexOf(tech.id) !== -1)
-                    return <span>tech.name</span>
-            })} */}
-
-
-
-            <label htmlFor="price">VALOR DA DIÁRIA</label>
-            <input
-                id="price"
-                name="price"
-                placeholder="Valor cobrado por dia"
-                value={price}
-                onChange={event => setPrice(event.target.value)}
-            />
-
-            <button type="submit" className="btn primary">Cadastrar</button>
-
-        </form>
-    )
+    </form>
+  )
 }

@@ -13,14 +13,10 @@ app.use(function(req, res, next) {
 
 app.use('/files', express.static(path.resolve('static', 'images')))
 
-
-
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use('/', routes)
-
-
 
 app.use((err, req, res, next) => {
 

@@ -87,6 +87,7 @@ class SpotController {
     }
     static async store (req, res, next) {
 
+        const user_id = Number(req.body.user_id || req.headers.user_id || req.query.user_id)
 
         if(!req.files || !req.files.thumbnail)
             return res.status(400).send(errors.BadRequest("Voce precisa enviar uma imagem"))
@@ -96,7 +97,7 @@ class SpotController {
             ? req.body.techs.split(',').map(tech => ({ id: tech}))
             : []
         
-        const { user_id, company, price } = req.body
+        const { company, price } = req.body
 
         try {
 
