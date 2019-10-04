@@ -10,9 +10,7 @@ export default function Login({ history }) {
       e.preventDefault();
   
       const { data: user } = await api.post('/sessions', { email });
-  
-      console.log(user);
-  
+    
       localStorage.setItem('session', user.id);
 
       history.push('/dashboard')
