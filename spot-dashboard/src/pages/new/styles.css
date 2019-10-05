@@ -1,0 +1,56 @@
+label#thumbnail {
+    margin-bottom: 20px;
+    border: 1px dashed #ddd;
+    background-size: cover;
+    cursor: pointer;
+    display: flex;
+    height: 160px;
+    justify-content: center;
+    align-items: center;
+}
+
+label#thumbnail input {
+    display: none;
+}
+
+label#thumbnail.has-thumbnail {
+    border: 0;
+}
+label#thumbnail.has-thumbnail img{
+    display: none;
+}
+
+.inline label, .inline input[type="checkbox"] {
+    margin: 0 4px!important;
+    height: auto!important;
+}
+
+.inline > * {
+    margin-bottom: 0!important;
+    margin-top: 0!important;
+}
+
+.inline {
+    margin-bottom: 20px;
+}
+
+select {
+    background-color: #F3F7F0;
+    color: #444;
+}
+ul.inline {
+    flex-wrap: wrap;
+    margin: 0 -2px 8px -2px!important;
+}
+ul.inline li.tag {
+    padding: 5px;
+    background: #357DED;
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 3px;
+    margin-right: 2px!important;
+    margin-top: 2px!important;
+    flex: auto;
+}
+

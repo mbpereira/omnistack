@@ -1,10 +1,25 @@
 const { Tech } = require('../models')
 
+const createLink = tech => {
+    tech.spots.map(spot => spot.createLink())
+}
+
 class TechController {
     static index (req, res, next) {
 
+        if(!!req.query.in)
+            return Tech.query().whereIn('id', req.query.in.split(','))
+                .eager('spots')
+                .then(techs => {
+                    techs.map(createLink)
+                    res.status(200).send(techs)
+                })
+
         Tech.query().eager('spots')
-            .then(techs => res.status(200).send(techs))
+            .then(techs => {
+                techs.map(createLink)
+                res.status(200).send(techs)
+            })
             .catch(next)
 
     }

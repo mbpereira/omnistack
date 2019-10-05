@@ -77,22 +77,20 @@ export default function New({ history }) {
 
       const techsToSave = createdTechs.replace(/\s/g, '').split(',').map(tech => ({ name: tech }))
 
-      console.log(techsToSave)
       const { data } = await api.post('/techs', techsToSave)
 
       const selecteds = (Array.isArray(data)) 
-        ? [...data.map(tech => tech.id), ...spotTechs]
-        : [data.id, ...spotTechs]
+        ? new Set([...data.map(tech => tech.id), ...spotTechs])
+        : new Set([data.id, ...spotTechs])
 
-      console.log(selecteds)
-
-      setSpotTechs(selecteds)
+      setSpotTechs([...selecteds])
 
       return loadTechs()
 
     }
 
-    setSpotTechs([...spotTechs, Number(selectedTech)])
+    const selecteds = new Set([...spotTechs, Number(selectedTech)])
+    setSpotTechs([...selecteds])
 
     console.log(spotTechs)
   }

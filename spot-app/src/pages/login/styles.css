@@ -38,8 +38,11 @@ select {
     background-color: #F3F7F0;
     color: #444;
 }
-
-li.tag {
+ul.inline {
+    flex-wrap: wrap;
+    margin: 0 -2px 8px -2px!important;
+}
+ul.inline li.tag {
     padding: 5px;
     background: #357DED;
     color: #fff;
@@ -48,4 +51,5 @@ li.tag {
     border-radius: 3px;
     margin-right: 2px!important;
     margin-top: 2px!important;
+    flex: auto;
 }

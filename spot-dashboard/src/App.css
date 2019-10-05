@@ -21,7 +21,9 @@ select {
 body, input, button {
   font-family: 'Roboto', Arial, Helvetica, sans-serif;
 }
-
+ul {
+  list-style: none;
+}
 .container {
   margin: 80px auto 0;
   max-width: 450px;

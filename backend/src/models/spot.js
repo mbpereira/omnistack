@@ -3,6 +3,9 @@ const Model = require('./model')
 
 class Spot extends Model {
     
+    createLink() {
+        this.link = `/files/${this.thumbnail}`
+    }
     static get tableName () {
         return 'spots'
     }
