@@ -19,6 +19,7 @@ class DashboardController {
             .catch(next)
 
     }
+
 }
 
 module.exports = DashboardController

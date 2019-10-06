@@ -19,4 +19,7 @@ router.post('/spots', multiparty, Spot.store)
 
 router.post('/spots/:spot_id/bookings', Booking.store)
 
+router.post('/bookings/:booking_id/approve', Booking.approve)
+router.post('/bookings/:booking_id/reject', Booking.reject)
+
 module.exports = router

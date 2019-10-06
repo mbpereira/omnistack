@@ -24,13 +24,13 @@ export default function Main({ history }) {
     }
 
     async function handleSubmit(e) {
+
       e.preventDefault()
   
       const { data: user } = await api.post('/sessions', { email })
-      const url = spotTechs.length ? `/spots?techs=${spotTechs.join(',')}` : '/spots'
-
       localStorage.setItem('session', user.id)
       
+      const url = spotTechs.length ? `/spots?techs=${spotTechs.join(',')}` : '/spots'
       history.push(url)
   
     }
