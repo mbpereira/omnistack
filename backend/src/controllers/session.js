@@ -8,12 +8,12 @@ class Session {
 
         try {
 
-            let user = await User.query().where('email', email).first()
+            let user = await User.query().where('email', email.toLowerCase()).first()
 
             if(!!user)
                 return res.status(200).send(user)
 
-            user = await User.query().insert({ email }).returning('*')
+            user = await User.query().insert({ email: email.toLowerCase() }).returning('*')
 
             res.status(201).send(user)
 

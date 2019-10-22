@@ -16,6 +16,8 @@ class BookingController {
         .eager('[spot.[user], user]')
         .then(booking => {
 
+            // verifica se quem cadastrou o spot está conectado.
+            // envia uma mensagem ao seu id de socket.
             const ownerSocket = req.connecteds[booking.spot.user.id]
 
             if(ownerSocket) {

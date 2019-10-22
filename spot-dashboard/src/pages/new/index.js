@@ -61,7 +61,12 @@ export default function New({ history }) {
 
     e.preventDefault()
 
-    const formData = new FormData(e.target)
+    const formData = new FormData()
+
+    formData.append('company', company)
+    formData.append('techs', spotTechs)
+    formData.append('price', price)
+    formData.append('thumbnail', thumbnail)
 
     await api.post('/spots', formData, {
       headers: { user_id }
@@ -78,6 +83,9 @@ export default function New({ history }) {
       const techsToSave = createdTechs.replace(/\s/g, '').split(',').map(tech => ({ name: tech }))
 
       const { data } = await api.post('/techs', techsToSave)
+
+      if(!data)
+        return
 
       const selecteds = (Array.isArray(data)) 
         ? new Set([...data.map(tech => tech.id), ...spotTechs])

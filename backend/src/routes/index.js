@@ -11,8 +11,6 @@ router.get('/techs', Tech.index)
 router.get('/techs/:id', Tech.show)
 router.post('/techs', Tech.store)
 
-// router.post('/users', User.store)
-
 router.get('/spots', Spot.index)
 router.get('/spots/:id', Spot.show)
 router.post('/spots', multiparty, Spot.store)
